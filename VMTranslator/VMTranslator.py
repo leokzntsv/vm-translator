@@ -1,7 +1,9 @@
 import os
 import sys
 
+from CodeWriter import CodeWriter
 from Parser import Parser
+from VMCommand import VMCommand
 
 if len(sys.argv) > 1:
     full_file_name = sys.argv[1]
@@ -20,8 +22,16 @@ if not os.path.exists(full_file_name):
     sys.exit(1)
 
 parser = Parser(full_file_name)
+code_writer = CodeWriter()
+code_writer.set_file_name(file_name)
+
 while parser.has_more_commands():
     parser.advance()
-    print(parser.command_type())
-    print(parser.arg1())
-    print(parser.arg2())
+    # print(parser.command_type())
+    # print(parser.arg1())
+    # print(parser.arg2())
+    command_type = parser.command_type()
+    if command_type == VMCommand.C_PUSH:
+        code_writer.write_push(parser.current_command, parser.arg1(), parser.arg2())
+    elif command_type == VMCommand.C_ARITHMETIC:
+        code_writer.write_arithmetic(parser.current_command)
