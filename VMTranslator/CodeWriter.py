@@ -11,12 +11,10 @@ class CodeWriter:
             if command == "add":
                 # pop from stack
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 f.write("D=M\n")
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 # add
                 f.write("M=D+M\n")
                 # move pointer
@@ -25,12 +23,10 @@ class CodeWriter:
             elif command == "sub":
                 # pop from stack
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 f.write("D=M\n")
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 # sub
                 f.write("M=M-D\n")
                 # move pointer
@@ -38,25 +34,22 @@ class CodeWriter:
                 f.write("M=M+1\n")
             elif command == "neg":
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 # neg
                 f.write("M=-M\n")
                 # move pointer
                 f.write("@SP\n")
                 f.write("M=M+1\n")
             elif command == "eq":
-                label_true = f"EQ_TRUE{self.comparison_counter}"
-                label_end = f"EQ_END{self.comparison_counter}"
+                label_true = f"EQ_TRUE_{self.comparison_counter}"
+                label_end = f"EQ_END_{self.comparison_counter}"
                 self.comparison_counter += 1
                 # pop from stack
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 f.write("D=M\n")
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 
                 # eq
                 f.write("D=M-D\n")
@@ -77,17 +70,15 @@ class CodeWriter:
                 f.write("@SP\n")
                 f.write("M=M+1\n")
             elif command == "gt":
-                label_true = f"EQ_TRUE{self.comparison_counter}"
-                label_end = f"EQ_END{self.comparison_counter}"
+                label_true = f"EQ_TRUE_{self.comparison_counter}"
+                label_end = f"EQ_END_{self.comparison_counter}"
                 self.comparison_counter += 1
                 # pop from stack
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 f.write("D=M\n")
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 
                 # gt
                 f.write("D=M-D\n")
@@ -108,17 +99,15 @@ class CodeWriter:
                 f.write("@SP\n")
                 f.write("M=M+1\n")
             elif command == "lt":
-                label_true = f"EQ_TRUE{self.comparison_counter}"
-                label_end = f"EQ_END{self.comparison_counter}"
+                label_true = f"EQ_TRUE_{self.comparison_counter}"
+                label_end = f"EQ_END_{self.comparison_counter}"
                 self.comparison_counter += 1
                 # pop from stack
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 f.write("D=M\n")
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 
                 # lt
                 f.write("D=M-D\n")
@@ -141,12 +130,10 @@ class CodeWriter:
             elif command == "and":
                 # pop from stack
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 f.write("D=M\n")
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 # and
                 f.write("M=D&M\n")
                 # move pointer
@@ -155,12 +142,10 @@ class CodeWriter:
             elif command == "or":
                 # pop from stack
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 f.write("D=M\n")
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 # or
                 f.write("M=D|M\n")
                 # move pointer
@@ -169,8 +154,7 @@ class CodeWriter:
             elif command == "not":
                 # pop from stack
                 f.write("@SP\n")
-                f.write("M=M-1\n")
-                f.write("A=M\n")
+                f.write("AM=M-1\n")
                 # not
                 f.write("M=!M\n")
                 # move pointer
