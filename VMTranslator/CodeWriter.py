@@ -9,171 +9,198 @@ class CodeWriter:
         with open(f"{self.file_name}.asm", "a") as f:
             f.write(f"// {command}\n")
             if command == "add":
-                # pop from stack
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                f.write("D=M\n")
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                # add
-                f.write("M=D+M\n")
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_add())
+                f.write("\n")
             elif command == "sub":
-                # pop from stack
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                f.write("D=M\n")
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                # sub
-                f.write("M=M-D\n")
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_sub())
+                f.write("\n")
             elif command == "neg":
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                # neg
-                f.write("M=-M\n")
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_neg())
+                f.write("\n")
             elif command == "eq":
-                label_true = f"EQ_TRUE_{self.comparison_counter}"
-                label_end = f"EQ_END_{self.comparison_counter}"
-                self.comparison_counter += 1
-                # pop from stack
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                f.write("D=M\n")
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                
-                # eq
-                f.write("D=M-D\n")
-                # if == 0 then -1 to the stack else 0 to the stack
-                f.write(f"@{label_true}\n")
-                f.write("D;JEQ\n")
-                f.write("D=0\n")
-                f.write(f"@{label_end}\n")
-                f.write("0;JMP\n")
-                f.write(f"({label_true})\n")
-                f.write("D=-1\n")
-                f.write(f"({label_end})\n")
-                f.write("@SP\n")
-                f.write("A=M\n")
-                f.write("M=D\n")
-
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_eq())
+                f.write("\n")
             elif command == "gt":
-                label_true = f"EQ_TRUE_{self.comparison_counter}"
-                label_end = f"EQ_END_{self.comparison_counter}"
-                self.comparison_counter += 1
-                # pop from stack
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                f.write("D=M\n")
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                
-                # gt
-                f.write("D=M-D\n")
-                # if > 0 then -1 to the stack else 0 to the stack
-                f.write(f"@{label_true}\n")
-                f.write("D;JGT\n")
-                f.write("D=0\n")
-                f.write(f"@{label_end}\n")
-                f.write("0;JMP\n")
-                f.write(f"({label_true})\n")
-                f.write("D=-1\n")
-                f.write(f"({label_end})\n")
-                f.write("@SP\n")
-                f.write("A=M\n")
-                f.write("M=D\n")
-
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_gt())
+                f.write("\n")
             elif command == "lt":
-                label_true = f"EQ_TRUE_{self.comparison_counter}"
-                label_end = f"EQ_END_{self.comparison_counter}"
-                self.comparison_counter += 1
-                # pop from stack
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                f.write("D=M\n")
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                
-                # lt
-                f.write("D=M-D\n")
-                # if < 0 then -1 to the stack else 0 to the stack
-                f.write(f"@{label_true}\n")
-                f.write("D;JLT\n")
-                f.write("D=0\n")
-                f.write(f"@{label_end}\n")
-                f.write("0;JMP\n")
-                f.write(f"({label_true})\n")
-                f.write("D=-1\n")
-                f.write(f"({label_end})\n")
-                f.write("@SP\n")
-                f.write("A=M\n")
-                f.write("M=D\n")
-
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_lt())
+                f.write("\n")
             elif command == "and":
-                # pop from stack
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                f.write("D=M\n")
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                # and
-                f.write("M=D&M\n")
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_and())
+                f.write("\n")
             elif command == "or":
-                # pop from stack
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                f.write("D=M\n")
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                # or
-                f.write("M=D|M\n")
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_or())
+                f.write("\n")
             elif command == "not":
-                # pop from stack
-                f.write("@SP\n")
-                f.write("AM=M-1\n")
-                # not
-                f.write("M=!M\n")
-                # move pointer
-                f.write("@SP\n")
-                f.write("M=M+1\n")
+                f.write(self.__translate_not())
+                f.write("\n")
 
     def write_push(self, command: str, segment: str, index: int):
         with open(f"{self.file_name}.asm", "a") as f:
             f.write(f"// {command}\n")
-            f.write(f"@{index}\n")
-            f.write("D=A\n")
-            f.write("@SP\n")
-            f.write("A=M\n")
-            f.write("M=D\n")
-            f.write("@SP\n")
-            f.write("M=M+1\n")
+            if segment == "constant":
+                f.write(self.__translate_push_constant(index))
+                f.write("\n")
 
     def write_pop(self, command: str, segment: str, index: int):
         pass
     
     def close(self):
         pass
+
+    def __translate_push_constant(self, index: int) -> str:
+        return f"""
+        @{index}
+        D=A
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        """
+
+    def __translate_add(self) -> str:
+        return """
+        @SP
+        AM=M-1
+        D=M
+        @SP
+        M=M-1
+        A=M
+        M=D+M
+        @SP
+        M=M+1
+        """
+
+    def __translate_sub(self) -> str:
+        return """
+        @SP
+        AM=M-1
+        D=M
+        @SP
+        AM=M-1
+        M=M-D
+        @SP
+        M=M+1
+        """
+
+    def __translate_neg(self) -> str:
+        return """
+        @SP
+        AM=M-1
+        M=-M
+        @SP
+        M=M+1
+        """
+
+    def __translate_eq(self) -> str:
+        label_true = f"EQ_TRUE_{self.comparison_counter}"
+        label_end = f"EQ_END_{self.comparison_counter}"
+        self.comparison_counter += 1
+        return f"""
+        @SP
+        AM=M-1
+        D=M
+        @SP
+        AM=M-1
+        D=M-D
+        @{label_true}
+        D;JEQ
+        D=0
+        @{label_end}
+        0;JMP
+        ({label_true})
+        D=-1
+        ({label_end})
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        """
+
+    def __translate_gt(self) -> str:
+        label_true = f"EQ_TRUE_{self.comparison_counter}"
+        label_end = f"EQ_END_{self.comparison_counter}"
+        self.comparison_counter += 1
+        return f"""
+        @SP
+        AM=M-1
+        D=M
+        @SP
+        AM=M-1
+        D=M-D
+        @{label_true}
+        D;JGT
+        D=0
+        @{label_end}
+        0;JMP
+        ({label_true})
+        D=-1
+        ({label_end})
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        """
+
+    def __translate_lt(self) -> str:
+        label_true = f"EQ_TRUE_{self.comparison_counter}"
+        label_end = f"EQ_END_{self.comparison_counter}"
+        self.comparison_counter += 1
+        return f"""
+        @SP
+        AM=M-1
+        D=M
+        @SP
+        AM=M-1
+        D=M-D
+        @{label_true}
+        D;JLT
+        D=0
+        @{label_end}
+        0;JMP
+        ({label_true})
+        D=-1
+        ({label_end})
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        """
+
+    def __translate_and(self) -> str:
+        return """
+        @SP
+        AM=M-1
+        D=M
+        @SP
+        AM=M-1
+        M=D&M
+        @SP
+        M=M+1
+        """
+
+    def __translate_or(self) -> str:
+        return """
+        @SP
+        AM=M-1
+        D=M
+        @SP
+        AM=M-1
+        M=D|M
+        @SP
+        M=M+1
+        """
+
+    def __translate_not(self) -> str:
+        return """
+        @SP
+        AM=M-1
+        M=!M
+        @SP
+        M=M+1
+        """
