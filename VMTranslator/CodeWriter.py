@@ -60,6 +60,9 @@ class CodeWriter:
             elif segment == "pointer":
                 f.write(self.__translate_push_pointer(index))
                 f.write("\n")
+            elif segment == "static":
+                f.write(self.__translate_push_static(index))
+                f.write("\n")
 
     def write_pop(self, command: str, segment: str, index: int):
         with open(f"{self.file_name}.asm", "a") as f:
@@ -81,6 +84,9 @@ class CodeWriter:
                 f.write("\n")
             elif segment == "pointer":
                 f.write(self.__translate_pop_pointer(index))
+                f.write("\n")
+            elif segment == "static":
+                f.write(self.__translate_pop_static(index))
                 f.write("\n")
 
     def close(self):
@@ -266,6 +272,28 @@ class CodeWriter:
         AM=M-1
         D=M
         @{aligned_segment}
+        M=D
+        """
+
+    def __translate_push_static(self, index: int) -> str:
+        variable_name = f"{self.file_name}.{index}"
+        return f"""
+        @{variable_name}
+        D=M
+        @SP
+        A=M
+        M=D
+        @SP
+        M=M+1
+        """
+    
+    def __translate_pop_static(self, index: int) -> str:
+        variable_name = f"{self.file_name}.{index}"
+        return f"""
+        @SP
+        AM=M-1
+        D=M
+        @{variable_name}
         M=D
         """
 
