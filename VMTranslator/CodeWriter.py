@@ -1,3 +1,6 @@
+import textwrap
+
+
 class CodeWriter:
     def __init__(self):
         self.comparison_counter = 0
@@ -93,351 +96,351 @@ class CodeWriter:
         pass
 
     def __translate_push_constant(self, value: int) -> str:
-        return f"""
-        @{value}
-        D=A
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @{value}
+            D=A
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_push_local(self, index: int) -> str:
-        return f"""
-        @{index}
-        D=A
-        @LCL
-        A=D+M
-        D=M
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @LCL
+            A=D+M
+            D=M
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_pop_local(self, index: int):
-        return f"""
-        @{index}
-        D=A
-        @LCL
-        D=D+M // final RAM address
-        @R13
-        M=D // save final RAM address to R13
-        @SP
-        AM=M-1
-        D=M // retrieve value to pop from stack
-        @R13
-        A=M
-        M=D // put value from stack to the final RAM address
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @LCL
+            D=D+M // final RAM address
+            @R13
+            M=D // save final RAM address to R13
+            @SP
+            AM=M-1
+            D=M // retrieve value to pop from stack
+            @R13
+            A=M
+            M=D // put value from stack to the final RAM address\
+        """)
 
     def __translate_push_argument(self, index: int) -> str:
-        return f"""
-        @{index}
-        D=A
-        @ARG
-        A=D+M
-        D=M
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @ARG
+            A=D+M
+            D=M
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_pop_argument(self, index: int):
-        return f"""
-        @{index}
-        D=A
-        @ARG
-        D=D+M // final RAM address
-        @R13
-        M=D // save final RAM address to R13
-        @SP
-        AM=M-1
-        D=M // retrieve value to pop from stack
-        @R13
-        A=M
-        M=D // put value from stack to the final RAM address
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @ARG
+            D=D+M // final RAM address
+            @R13
+            M=D // save final RAM address to R13
+            @SP
+            AM=M-1
+            D=M // retrieve value to pop from stack
+            @R13
+            A=M
+            M=D // put value from stack to the final RAM address\
+        """)
 
     def __translate_push_this(self, index: int) -> str:
-        return f"""
-        @{index}
-        D=A
-        @THIS
-        A=D+M
-        D=M
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @THIS
+            A=D+M
+            D=M
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_pop_this(self, index: int):
-        return f"""
-        @{index}
-        D=A
-        @THIS
-        D=D+M // final RAM address
-        @R13
-        M=D // save final RAM address to R13
-        @SP
-        AM=M-1
-        D=M // retrieve value to pop from stack
-        @R13
-        A=M
-        M=D // put value from stack to the final RAM address
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @THIS
+            D=D+M // final RAM address
+            @R13
+            M=D // save final RAM address to R13
+            @SP
+            AM=M-1
+            D=M // retrieve value to pop from stack
+            @R13
+            A=M
+            M=D // put value from stack to the final RAM address\
+        """)
 
     def __translate_push_that(self, index: int) -> str:
-        return f"""
-        @{index}
-        D=A
-        @THAT
-        A=D+M
-        D=M
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @THAT
+            A=D+M
+            D=M
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_pop_that(self, index: int):
-        return f"""
-        @{index}
-        D=A
-        @THAT
-        D=D+M // final RAM address
-        @R13
-        M=D // save final RAM address to R13
-        @SP
-        AM=M-1
-        D=M // retrieve value to pop from stack
-        @R13
-        A=M
-        M=D // put value from stack to the final RAM address
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @THAT
+            D=D+M // final RAM address
+            @R13
+            M=D // save final RAM address to R13
+            @SP
+            AM=M-1
+            D=M // retrieve value to pop from stack
+            @R13
+            A=M
+            M=D // put value from stack to the final RAM address\
+        """)
 
     def __translate_push_temp(self, index: int) -> str:
-        return f"""
-        @{index}
-        D=A
-        @5
-        A=D+A
-        D=M
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @5
+            A=D+A
+            D=M
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_pop_temp(self, index: int) -> str:
-        return f"""
-        @{index}
-        D=A
-        @5
-        D=D+A // final RAM address
-        @R13
-        M=D // save final RAM address to R13
-        @SP
-        AM=M-1
-        D=M // retrieve value to pop from stack
-        @R13
-        A=M
-        M=D // put value from stack to the final RAM address
-        """
+        return textwrap.dedent(f"""\
+            @{index}
+            D=A
+            @5
+            D=D+A // final RAM address
+            @R13
+            M=D // save final RAM address to R13
+            @SP
+            AM=M-1
+            D=M // retrieve value to pop from stack
+            @R13
+            A=M
+            M=D // put value from stack to the final RAM address\
+        """)
 
     def __translate_push_pointer(self, index: int) -> str:
         aligned_segment = "THIS" if index == 0 else "THAT"
-        return f"""
-        @{aligned_segment}
-        D=M
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @{aligned_segment}
+            D=M
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_pop_pointer(self, index: int) -> str:
         aligned_segment = "THIS" if index == 0 else "THAT"
-        return f"""
-        @SP
-        AM=M-1
-        D=M
-        @{aligned_segment}
-        M=D
-        """
+        return textwrap.dedent(f"""\
+            @SP
+            AM=M-1
+            D=M
+            @{aligned_segment}
+            M=D\
+        """)
 
     def __translate_push_static(self, index: int) -> str:
         variable_name = f"{self.file_name}.{index}"
-        return f"""
-        @{variable_name}
-        D=M
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @{variable_name}
+            D=M
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
     
     def __translate_pop_static(self, index: int) -> str:
         variable_name = f"{self.file_name}.{index}"
-        return f"""
-        @SP
-        AM=M-1
-        D=M
-        @{variable_name}
-        M=D
-        """
+        return textwrap.dedent(f"""\
+            @SP
+            AM=M-1
+            D=M
+            @{variable_name}
+            M=D\
+        """)
 
     def __translate_add(self) -> str:
-        return """
-        @SP
-        AM=M-1
-        D=M
-        @SP
-        M=M-1
-        A=M
-        M=D+M
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent("""\
+            @SP
+            AM=M-1
+            D=M
+            @SP
+            M=M-1
+            A=M
+            M=D+M
+            @SP
+            M=M+1\
+        """)
 
     def __translate_sub(self) -> str:
-        return """
-        @SP
-        AM=M-1
-        D=M
-        @SP
-        AM=M-1
-        M=M-D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent("""\
+            @SP
+            AM=M-1
+            D=M
+            @SP
+            AM=M-1
+            M=M-D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_neg(self) -> str:
-        return """
-        @SP
-        AM=M-1
-        M=-M
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent("""\
+            @SP
+            AM=M-1
+            M=-M
+            @SP
+            M=M+1\
+        """)
 
     def __translate_eq(self) -> str:
         label_true = f"EQ_TRUE_{self.comparison_counter}"
         label_end = f"EQ_END_{self.comparison_counter}"
         self.comparison_counter += 1
-        return f"""
-        @SP
-        AM=M-1
-        D=M
-        @SP
-        AM=M-1
-        D=M-D
-        @{label_true}
-        D;JEQ
-        D=0
-        @{label_end}
-        0;JMP
-        ({label_true})
-        D=-1
-        ({label_end})
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @SP
+            AM=M-1
+            D=M
+            @SP
+            AM=M-1
+            D=M-D
+            @{label_true}
+            D;JEQ
+            D=0
+            @{label_end}
+            0;JMP
+            ({label_true})
+            D=-1
+            ({label_end})
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_gt(self) -> str:
         label_true = f"EQ_TRUE_{self.comparison_counter}"
         label_end = f"EQ_END_{self.comparison_counter}"
         self.comparison_counter += 1
-        return f"""
-        @SP
-        AM=M-1
-        D=M
-        @SP
-        AM=M-1
-        D=M-D
-        @{label_true}
-        D;JGT
-        D=0
-        @{label_end}
-        0;JMP
-        ({label_true})
-        D=-1
-        ({label_end})
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @SP
+            AM=M-1
+            D=M
+            @SP
+            AM=M-1
+            D=M-D
+            @{label_true}
+            D;JGT
+            D=0
+            @{label_end}
+            0;JMP
+            ({label_true})
+            D=-1
+            ({label_end})
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_lt(self) -> str:
         label_true = f"EQ_TRUE_{self.comparison_counter}"
         label_end = f"EQ_END_{self.comparison_counter}"
         self.comparison_counter += 1
-        return f"""
-        @SP
-        AM=M-1
-        D=M
-        @SP
-        AM=M-1
-        D=M-D
-        @{label_true}
-        D;JLT
-        D=0
-        @{label_end}
-        0;JMP
-        ({label_true})
-        D=-1
-        ({label_end})
-        @SP
-        A=M
-        M=D
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent(f"""\
+            @SP
+            AM=M-1
+            D=M
+            @SP
+            AM=M-1
+            D=M-D
+            @{label_true}
+            D;JLT
+            D=0
+            @{label_end}
+            0;JMP
+            ({label_true})
+            D=-1
+            ({label_end})
+            @SP
+            A=M
+            M=D
+            @SP
+            M=M+1\
+        """)
 
     def __translate_and(self) -> str:
-        return """
-        @SP
-        AM=M-1
-        D=M
-        @SP
-        AM=M-1
-        M=D&M
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent("""\
+            @SP
+            AM=M-1
+            D=M
+            @SP
+            AM=M-1
+            M=D&M
+            @SP
+            M=M+1\
+        """)
 
     def __translate_or(self) -> str:
-        return """
-        @SP
-        AM=M-1
-        D=M
-        @SP
-        AM=M-1
-        M=D|M
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent("""\
+            @SP
+            AM=M-1
+            D=M
+            @SP
+            AM=M-1
+            M=D|M
+            @SP
+            M=M+1\
+        """)
 
     def __translate_not(self) -> str:
-        return """
-        @SP
-        AM=M-1
-        M=!M
-        @SP
-        M=M+1
-        """
+        return textwrap.dedent("""\
+            @SP
+            AM=M-1
+            M=!M
+            @SP
+            M=M+1\
+        """)
