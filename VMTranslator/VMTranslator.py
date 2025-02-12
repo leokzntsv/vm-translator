@@ -27,11 +27,10 @@ code_writer.set_file_name(file_name)
 
 while parser.has_more_commands():
     parser.advance()
-    # print(parser.command_type())
-    # print(parser.arg1())
-    # print(parser.arg2())
     command_type = parser.command_type()
     if command_type == VMCommand.C_PUSH:
         code_writer.write_push(parser.current_command, parser.arg1(), parser.arg2())
+    elif command_type == VMCommand.C_POP:
+        code_writer.write_pop(parser.current_command, parser.arg1(), parser.arg2())
     elif command_type == VMCommand.C_ARITHMETIC:
         code_writer.write_arithmetic(parser.current_command)
