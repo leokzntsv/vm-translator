@@ -112,7 +112,7 @@ class CodeWriter:
             f.write(f"// {command}\n")
             f.write(self.__translate_if(label))
             f.write("\n")
-    
+
     def write_function(self, command: str, function_name: str, num_locals: int):
         with open(f"{self.file_name}.asm", "a") as f:
             f.write(f"// {command}\n")
