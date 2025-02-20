@@ -3,9 +3,9 @@ import textwrap
 
 class CodeWriter:
     def __init__(self, output_file_name: str):
-        self.comparison_counter = 0
         self.output_file_name = output_file_name
-        self.file_name = ""
+        self.comparison_counter = 0
+        self.current_file_name = ""
         self.current_function_name = ""
 
     def set_file_name(self, file_name: str):
