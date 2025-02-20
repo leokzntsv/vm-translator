@@ -2,9 +2,11 @@ import textwrap
 
 
 class CodeWriter:
-    def __init__(self, output_path: str):
+    def __init__(self, output_file_name: str):
         self.comparison_counter = 0
-        self.output_file_name = output_path
+        self.output_file_name = output_file_name
+        self.file_name = ""
+        self.current_function_name = ""
 
     def set_file_name(self, file_name: str):
         self.current_file_name = file_name
@@ -99,24 +101,28 @@ class CodeWriter:
                 f.write("\n")
 
     def write_label(self, command: str, label: str):
+        full_label = self.current_function_name + f"${label}"
         with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
-            f.write(self.__translate_label(label)) # TODO: Construct label from function name
+            f.write(self.__translate_label(full_label))
             f.write("\n")
 
     def write_goto(self, command: str, label: str):
+        full_label = self.current_function_name + f"${label}"
         with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
-            f.write(self.__translate_goto(label))
+            f.write(self.__translate_goto(full_label))
             f.write("\n")
 
     def write_if(self, command: str, label: str):
+        full_label = self.current_function_name + f"${label}"
         with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
-            f.write(self.__translate_if(label))
+            f.write(self.__translate_if(full_label))
             f.write("\n")
 
     def write_function(self, command: str, function_name: str, num_locals: int):
+        self.current_function_name = function_name
         with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             f.write(self.__translate_function(function_name, num_locals))
@@ -520,8 +526,8 @@ class CodeWriter:
         )
 
     def __translate_function(self, function_name: str, num_locals: int) -> str:
-        loop_start_label = f"{function_name}_PUSH_LOCALS_LOOP_START"
-        loop_end_label = f"{function_name}_PUSH_LOCALS_LOOP_END"
+        loop_start_label = f"{function_name}$PUSH_LOCALS_LOOP_START"
+        loop_end_label = f"{function_name}$PUSH_LOCALS_LOOP_END"
         return textwrap.dedent(
             f"""\
                 ({function_name})
