@@ -34,3 +34,9 @@ while parser.has_more_commands():
         code_writer.write_pop(parser.current_command, parser.arg1(), parser.arg2())
     elif command_type == VMCommand.C_ARITHMETIC:
         code_writer.write_arithmetic(parser.current_command)
+    elif command_type == VMCommand.C_LABEL:
+        code_writer.write_label(parser.current_command, parser.arg1())
+    elif command_type == VMCommand.C_GOTO:
+        code_writer.write_goto(parser.current_command, parser.arg1())
+    elif command_type == VMCommand.C_IF:
+        code_writer.write_if(parser.current_command, parser.arg1())

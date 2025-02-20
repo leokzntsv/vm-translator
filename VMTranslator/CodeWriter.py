@@ -7,6 +7,9 @@ class CodeWriter:
     
     def set_file_name(self, file_name: str):
         self.file_name = file_name
+    
+    def write_init(self):
+        pass
 
     def write_arithmetic(self, command: str):
         with open(f"{self.file_name}.asm", "a") as f:
@@ -91,6 +94,24 @@ class CodeWriter:
             elif segment == "static":
                 f.write(self.__translate_pop_static(index))
                 f.write("\n")
+
+    def write_label(self, command: str, label: str):
+        with open(f"{self.file_name}.asm", "a") as f:
+            f.write(f"// {command}\n")
+            f.write(self.__translate_label(label)) # TODO: Construct label from function name
+            f.write("\n")
+
+    def write_goto(self, command: str, label: str):
+        with open(f"{self.file_name}.asm", "a") as f:
+            f.write(f"// {command}\n")
+            f.write(self.__translate_goto(label))
+            f.write("\n")
+
+    def write_if(self, command: str, label: str):
+        with open(f"{self.file_name}.asm", "a") as f:
+            f.write(f"// {command}\n")
+            f.write(self.__translate_if(label))
+            f.write("\n")
 
     def close(self):
         pass
@@ -444,3 +465,29 @@ class CodeWriter:
             @SP
             M=M+1\
         """)
+
+    def __translate_label(self, label: str) -> str:
+        return textwrap.dedent(
+            f"""\
+                ({label})\
+            """
+        )
+
+    def __translate_goto(self, label: str) -> str:
+        return textwrap.dedent(
+            f"""\
+                @{label}
+                0;JMP\
+            """
+        )
+
+    def __translate_if(self, label: str) -> str:
+        return textwrap.dedent(
+            f"""\
+                @SP
+                AM=M-1
+                D=M
+                @{label}
+                D;JNE\
+            """
+        )
