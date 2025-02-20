@@ -112,6 +112,18 @@ class CodeWriter:
             f.write(f"// {command}\n")
             f.write(self.__translate_if(label))
             f.write("\n")
+    
+    def write_function(self, command: str, function_name: str, num_locals: int):
+        with open(f"{self.file_name}.asm", "a") as f:
+            f.write(f"// {command}\n")
+            f.write(self.__translate_function(function_name, num_locals))
+            f.write("\n")
+
+    def write_return(self, command: str):
+        with open(f"{self.file_name}.asm", "a") as f:
+            f.write(f"// {command}\n")
+            f.write(self.__translate_return())
+            f.write("\n")
 
     def close(self):
         pass
@@ -489,5 +501,87 @@ class CodeWriter:
                 D=M
                 @{label}
                 D;JNE\
+            """
+        )
+
+    def __translate_function(self, function_name: str, num_locals: int) -> str:
+        loop_start_label = f"{function_name}_PUSH_LOCALS_LOOP_START"
+        loop_end_label = f"{function_name}_PUSH_LOCALS_LOOP_END"
+        return textwrap.dedent(
+            f"""\
+                ({function_name})
+                @{num_locals}
+                D=A
+                @{loop_end_label}
+                D;JEQ
+                @R13 // Save `number of local variables`
+                M=D
+                ({loop_start_label}) // Push 0 to the stack `number of local variables` times
+                @0
+                D=A
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @R13
+                M=M-1
+                D=M
+                @{loop_start_label}
+                D;JGT
+                ({loop_end_label})\
+            """
+        )
+
+    def __translate_return(self) -> str:
+        return textwrap.dedent(
+            f"""\
+                @LCL // endFrame = LCL
+                D=M
+                @endFrame
+                M=D
+                @5 // retAddr = *(endFrame - 5)
+                A=D-A
+                D=M
+                @retAddr
+                M=D
+                @SP // *ARG = pop()
+                AM=M-1
+                D=M
+                @ARG
+                A=M
+                M=D
+                @ARG // SP = ARG + 1
+                D=M
+                @SP
+                M=D+1
+                @endFrame // THAT = *(endFrame - 1)
+                A=M-1
+                D=M
+                @THAT
+                M=D
+                @2 // THIS = *(endFrame - 2)
+                D=A
+                @endFrame
+                A=M-D
+                D=M
+                @THIS
+                M=D
+                @3 // ARG = *(endFrame - 3)
+                D=A
+                @endFrame
+                A=M-D
+                D=M
+                @ARG
+                M=D
+                @4 // LCL = *(endFrame - 4)
+                D=A
+                @endFrame
+                A=M-D
+                D=M
+                @LCL
+                M=D
+                @retAddr
+                0;JMP\
             """
         )

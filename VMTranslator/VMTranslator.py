@@ -40,3 +40,7 @@ while parser.has_more_commands():
         code_writer.write_goto(parser.current_command, parser.arg1())
     elif command_type == VMCommand.C_IF:
         code_writer.write_if(parser.current_command, parser.arg1())
+    elif command_type == VMCommand.C_FUNCTION:
+        code_writer.write_function(parser.current_command, parser.arg1(), parser.arg2())
+    elif command_type == VMCommand.C_RETURN:
+        code_writer.write_return(parser.current_command)
