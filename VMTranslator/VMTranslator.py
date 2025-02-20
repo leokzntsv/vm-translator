@@ -39,12 +39,17 @@ if os.path.isdir(path):
         if f.endswith(".vm") and os.path.isfile(file_path):
             files.append(file_path)
     
-    code_writer = CodeWriter()
-    for file in files:
-        parser = Parser(file)
-        folder_name = os.path.basename(path)
-        new_path = os.path.join(path, folder_name)
-        code_writer.set_file_name(new_path)
+    folder_name = os.path.basename(path)
+    output_file_name = os.path.join(path, folder_name) + ".asm"
+    code_writer = CodeWriter(output_file_name)
+    code_writer.write_init()
+
+    for file_path in files:
+        _, file = os.path.split(file_path)
+        file_name, _ = os.path.splitext(file)
+        code_writer.set_file_name(file_name)
+
+        parser = Parser(file_path)
         translate(parser, code_writer)
 
 elif os.path.isfile(path):
@@ -55,9 +60,15 @@ elif os.path.isfile(path):
     if not os.path.exists(path):
         print(f"There is no file named {path}")
         sys.exit(1)
-    
-    code_writer = CodeWriter()
-    file_name, _ = os.path.splitext(path)
+
+    output_file_root, _ = os.path.splitext(path)
+    output_file_name = output_file_root + ".asm"
+    code_writer = CodeWriter(output_file_name)
+    code_writer.write_init()
+
+    _, file = os.path.split(path)
+    file_name, _ = os.path.splitext(file)
     code_writer.set_file_name(file_name)
+
     parser = Parser(path)
     translate(parser, code_writer)

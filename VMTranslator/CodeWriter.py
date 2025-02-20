@@ -2,17 +2,20 @@ import textwrap
 
 
 class CodeWriter:
-    def __init__(self):
+    def __init__(self, output_path: str):
         self.comparison_counter = 0
-    
+        self.output_file_name = output_path
+
     def set_file_name(self, file_name: str):
-        self.file_name = file_name
-    
+        self.current_file_name = file_name
+
     def write_init(self):
-        pass
+        with open(f"{self.output_file_name}", "a") as f:
+            f.write(self.__initialization_code())
+            f.write("\n")
 
     def write_arithmetic(self, command: str):
-        with open(f"{self.file_name}.asm", "a") as f:
+        with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             if command == "add":
                 f.write(self.__translate_add())
@@ -43,7 +46,7 @@ class CodeWriter:
                 f.write("\n")
 
     def write_push(self, command: str, segment: str, index: int):
-        with open(f"{self.file_name}.asm", "a") as f:
+        with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             if segment == "constant":
                 f.write(self.__translate_push_constant(index))
@@ -71,7 +74,7 @@ class CodeWriter:
                 f.write("\n")
 
     def write_pop(self, command: str, segment: str, index: int):
-        with open(f"{self.file_name}.asm", "a") as f:
+        with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             if segment == "local":
                 f.write(self.__translate_pop_local(index))
@@ -96,37 +99,49 @@ class CodeWriter:
                 f.write("\n")
 
     def write_label(self, command: str, label: str):
-        with open(f"{self.file_name}.asm", "a") as f:
+        with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             f.write(self.__translate_label(label)) # TODO: Construct label from function name
             f.write("\n")
 
     def write_goto(self, command: str, label: str):
-        with open(f"{self.file_name}.asm", "a") as f:
+        with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             f.write(self.__translate_goto(label))
             f.write("\n")
 
     def write_if(self, command: str, label: str):
-        with open(f"{self.file_name}.asm", "a") as f:
+        with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             f.write(self.__translate_if(label))
             f.write("\n")
 
     def write_function(self, command: str, function_name: str, num_locals: int):
-        with open(f"{self.file_name}.asm", "a") as f:
+        with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             f.write(self.__translate_function(function_name, num_locals))
             f.write("\n")
 
     def write_return(self, command: str):
-        with open(f"{self.file_name}.asm", "a") as f:
+        with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             f.write(self.__translate_return())
             f.write("\n")
 
     def close(self):
         pass
+
+    def __initialization_code(self) -> str:
+        return textwrap.dedent(
+            f"""\
+                @256
+                D=A
+                @SP
+                M=D
+                @Sys.init
+                0;JMP\
+            """
+        )
 
     def __translate_push_constant(self, value: int) -> str:
         return textwrap.dedent(f"""\
@@ -312,7 +327,7 @@ class CodeWriter:
         """)
 
     def __translate_push_static(self, index: int) -> str:
-        variable_name = f"{self.file_name}.{index}"
+        variable_name = f"{self.current_file_name}.{index}"
         return textwrap.dedent(f"""\
             @{variable_name}
             D=M
@@ -324,7 +339,7 @@ class CodeWriter:
         """)
     
     def __translate_pop_static(self, index: int) -> str:
-        variable_name = f"{self.file_name}.{index}"
+        variable_name = f"{self.current_file_name}.{index}"
         return textwrap.dedent(f"""\
             @SP
             AM=M-1
