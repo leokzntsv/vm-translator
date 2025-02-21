@@ -31,6 +31,8 @@ def translate(parser: Parser, code_writer: CodeWriter):
             code_writer.write_function(parser.current_command, parser.arg1(), parser.arg2())
         elif command_type == VMCommand.C_RETURN:
             code_writer.write_return(parser.current_command)
+        elif command_type == VMCommand.C_CALL:
+            code_writer.write_call(parser.current_command, parser.arg1(), parser.arg2())
 
 if os.path.isdir(path):
     files = []

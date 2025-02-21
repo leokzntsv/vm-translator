@@ -5,6 +5,7 @@ class CodeWriter:
     def __init__(self, output_file_name: str):
         self.output_file_name = output_file_name
         self.comparison_counter = 0
+        self.call_counter = 0
         self.current_file_name = ""
         self.current_function_name = ""
 
@@ -124,6 +125,7 @@ class CodeWriter:
 
     def write_function(self, command: str, function_name: str, num_locals: int):
         self.current_function_name = function_name
+        self.call_counter = 0
         with open(f"{self.output_file_name}", "a") as f:
             f.write(f"// {command}\n")
             f.write(self.__translate_function(function_name, num_locals))
@@ -134,6 +136,13 @@ class CodeWriter:
             f.write(f"// {command}\n")
             f.write(self.__translate_return())
             f.write("\n")
+
+    def write_call(self, command: str, function_name: str, num_args: int):
+        with open(f"{self.output_file_name}", "a") as f:
+            f.write(f"// {command}\n")
+            f.write(self.__translate_call(function_name, num_args, self.call_counter))
+            f.write("\n")
+        self.call_counter += 1
 
     def close(self):
         pass
@@ -665,5 +674,66 @@ class CodeWriter:
                 @retAddr // goto retAddr
                 A=M
                 0;JMP\
+            """
+        )
+
+    def __translate_call(self, function_name: str, num_args: int, call_counter: int) -> str:
+        return_label = f"{self.current_function_name}$ret.{call_counter}"
+        return textwrap.dedent(
+            f"""\
+                @{return_label} // push returnAddress
+                D=A
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @LCL // push LCL
+                D=M
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @ARG // push ARG
+                D=M
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @THIS // push THIS
+                D=M
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @THAT // push THAT
+                D=M
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @{num_args} // ARG = SP - `number of args` - 5
+                D=A
+                @SP
+                D=M-D
+                @R13
+                M=D
+                @5
+                D=A
+                @R13
+                D=M-D
+                @ARG
+                M=D
+                @SP // LCL = SP
+                D=M
+                @LCL
+                M=D
+                @{function_name} // goto function
+                0;JMP
+                ({return_label}) // Declare a label for the return address\
             """
         )
