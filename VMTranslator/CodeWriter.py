@@ -145,6 +145,20 @@ class CodeWriter:
                 D=A
                 @SP
                 M=D
+                @LCL // LCL = -1
+                M=-1
+                @2 // ARG = -2
+                D=-A
+                @ARG
+                M=D
+                @3 // THIS = -3
+                D=-A
+                @THIS
+                M=D
+                @4 // THAT = -4
+                D=-A
+                @THAT
+                M=D
                 @BOOTSTRAP$ret.0 // push returnAddress
                 D=A
                 @SP
@@ -180,7 +194,7 @@ class CodeWriter:
                 M=D
                 @SP
                 M=M+1
-                @SP // ARG = SP - `number of args` - 5
+                @SP // ARG = SP - 5
                 D=M
                 @5
                 D=D-A
@@ -648,7 +662,8 @@ class CodeWriter:
                 D=M
                 @LCL
                 M=D
-                @retAddr
+                @retAddr // goto retAddr
+                A=M
                 0;JMP\
             """
         )
