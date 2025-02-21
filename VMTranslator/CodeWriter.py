@@ -227,7 +227,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_push_local(self, index: int) -> str:
@@ -241,7 +241,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_pop_local(self, index: int):
@@ -257,7 +257,7 @@ class CodeWriter:
             D=M // retrieve value to pop from stack
             @R13
             A=M
-            M=D // put value from stack to the final RAM address\
+            M=D // put value from stack to the final RAM address
         """)
 
     def __translate_push_argument(self, index: int) -> str:
@@ -271,7 +271,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_pop_argument(self, index: int):
@@ -287,7 +287,7 @@ class CodeWriter:
             D=M // retrieve value to pop from stack
             @R13
             A=M
-            M=D // put value from stack to the final RAM address\
+            M=D // put value from stack to the final RAM address
         """)
 
     def __translate_push_this(self, index: int) -> str:
@@ -301,7 +301,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_pop_this(self, index: int):
@@ -317,7 +317,7 @@ class CodeWriter:
             D=M // retrieve value to pop from stack
             @R13
             A=M
-            M=D // put value from stack to the final RAM address\
+            M=D // put value from stack to the final RAM address
         """)
 
     def __translate_push_that(self, index: int) -> str:
@@ -331,7 +331,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_pop_that(self, index: int):
@@ -347,7 +347,7 @@ class CodeWriter:
             D=M // retrieve value to pop from stack
             @R13
             A=M
-            M=D // put value from stack to the final RAM address\
+            M=D // put value from stack to the final RAM address
         """)
 
     def __translate_push_temp(self, index: int) -> str:
@@ -361,7 +361,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_pop_temp(self, index: int) -> str:
@@ -377,7 +377,7 @@ class CodeWriter:
             D=M // retrieve value to pop from stack
             @R13
             A=M
-            M=D // put value from stack to the final RAM address\
+            M=D // put value from stack to the final RAM address
         """)
 
     def __translate_push_pointer(self, index: int) -> str:
@@ -389,7 +389,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_pop_pointer(self, index: int) -> str:
@@ -399,7 +399,7 @@ class CodeWriter:
             AM=M-1
             D=M
             @{aligned_segment}
-            M=D\
+            M=D
         """)
 
     def __translate_push_static(self, index: int) -> str:
@@ -411,7 +411,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
     
     def __translate_pop_static(self, index: int) -> str:
@@ -421,7 +421,7 @@ class CodeWriter:
             AM=M-1
             D=M
             @{variable_name}
-            M=D\
+            M=D
         """)
 
     def __translate_add(self) -> str:
@@ -434,7 +434,7 @@ class CodeWriter:
             A=M
             M=D+M
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_sub(self) -> str:
@@ -446,7 +446,7 @@ class CodeWriter:
             AM=M-1
             M=M-D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_neg(self) -> str:
@@ -455,7 +455,7 @@ class CodeWriter:
             AM=M-1
             M=-M
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_eq(self) -> str:
@@ -481,7 +481,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_gt(self) -> str:
@@ -507,7 +507,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_lt(self) -> str:
@@ -533,7 +533,7 @@ class CodeWriter:
             A=M
             M=D
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_and(self) -> str:
@@ -545,7 +545,7 @@ class CodeWriter:
             AM=M-1
             M=D&M
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_or(self) -> str:
@@ -557,7 +557,7 @@ class CodeWriter:
             AM=M-1
             M=D|M
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_not(self) -> str:
@@ -566,13 +566,13 @@ class CodeWriter:
             AM=M-1
             M=!M
             @SP
-            M=M+1\
+            M=M+1
         """)
 
     def __translate_label(self, label: str) -> str:
         return textwrap.dedent(
             f"""\
-                ({label})\
+                ({label})
             """
         )
 
@@ -580,7 +580,7 @@ class CodeWriter:
         return textwrap.dedent(
             f"""\
                 @{label}
-                0;JMP\
+                0;JMP
             """
         )
 
@@ -591,7 +591,7 @@ class CodeWriter:
                 AM=M-1
                 D=M
                 @{label}
-                D;JNE\
+                D;JNE
             """
         )
 
@@ -619,7 +619,7 @@ class CodeWriter:
                 M=M-1
                 @{loop_start_label}
                 0;JMP
-                ({loop_end_label})\
+                ({loop_end_label})
             """
         )
 
@@ -673,7 +673,7 @@ class CodeWriter:
                 M=D
                 @retAddr // goto retAddr
                 A=M
-                0;JMP\
+                0;JMP
             """
         )
 
@@ -734,6 +734,6 @@ class CodeWriter:
                 M=D
                 @{function_name} // goto function
                 0;JMP
-                ({return_label}) // Declare a label for the return address\
+                ({return_label}) // Declare a label for the return address
             """
         )
