@@ -630,10 +630,10 @@ class CodeWriter:
                 D=M
                 @endFrame
                 M=D
-                @5 // retAddr = *(endFrame - 5)
+                @5 // `return address` = *(endFrame - 5)
                 A=D-A
                 D=M
-                @retAddr
+                @R13 // temporary store `return address`
                 M=D
                 @SP // *ARG = pop()
                 AM=M-1
@@ -671,7 +671,7 @@ class CodeWriter:
                 D=M
                 @LCL
                 M=D
-                @retAddr // goto retAddr
+                @R13 // goto `return address`
                 A=M
                 0;JMP
             """
@@ -681,7 +681,7 @@ class CodeWriter:
         return_label = f"{self.current_function_name}$ret.{call_counter}"
         return textwrap.dedent(
             f"""\
-                @{return_label} // push returnAddress
+                @{return_label} // push return address
                 D=A
                 @SP
                 A=M
