@@ -13,6 +13,7 @@ class CodeWriter:
 
     def write_init(self):
         with open(f"{self.output_file_name}", "a") as f:
+            f.write("// Bootstrap Code\n")
             f.write(self.__initialization_code())
             f.write("\n")
 
@@ -140,12 +141,58 @@ class CodeWriter:
     def __initialization_code(self) -> str:
         return textwrap.dedent(
             f"""\
-                @256
+                @256 // SP = 256
                 D=A
                 @SP
                 M=D
-                @Sys.init
-                0;JMP\
+                @BOOTSTRAP$ret.0 // push returnAddress
+                D=A
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @LCL // push LCL
+                D=M
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @ARG // push ARG
+                D=M
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @THIS // push THIS
+                D=M
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @THAT // push THAT
+                D=M
+                @SP
+                A=M
+                M=D
+                @SP
+                M=M+1
+                @SP // ARG = SP - `number of args` - 5
+                D=M
+                @5
+                D=D-A
+                @ARG
+                M=D
+                @SP // LCL = SP
+                D=M
+                @LCL
+                M=D
+                @Sys.init // jump to Sys.init
+                0;JMP
+                (BOOTSTRAP$ret.0)
             """
         )
 
