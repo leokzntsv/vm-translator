@@ -526,30 +526,29 @@ class CodeWriter:
         )
 
     def __translate_function(self, function_name: str, num_locals: int) -> str:
-        loop_start_label = f"{function_name}$PUSH_LOCALS_LOOP_START"
-        loop_end_label = f"{function_name}$PUSH_LOCALS_LOOP_END"
+        loop_start_label = f"{function_name}$INIT_LCL_LOOP_START"
+        loop_end_label = f"{function_name}$INIT_LCL_LOOP_END"
         return textwrap.dedent(
             f"""\
                 ({function_name})
                 @{num_locals}
                 D=A
-                @{loop_end_label}
-                D;JEQ
                 @R13 // Save `number of local variables`
                 M=D
                 ({loop_start_label}) // Push 0 to the stack `number of local variables` times
-                @0
-                D=A
+                @R13
+                D=M
+                @{loop_end_label}
+                D;JEQ
                 @SP
                 A=M
-                M=D
+                M=0
                 @SP
                 M=M+1
                 @R13
                 M=M-1
-                D=M
                 @{loop_start_label}
-                D;JGT
+                0;JMP
                 ({loop_end_label})\
             """
         )
