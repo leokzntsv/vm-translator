@@ -144,7 +144,9 @@ class CodeWriter:
         self.call_counter += 1
 
     def close(self):
-        pass
+        with open(f"{self.output_file_name}", "a") as f:
+            f.write("// Ending with an infinite loop\n")
+            f.write(self.__infinite_loop())
 
     def __initialization_code(self) -> str:
         return textwrap.dedent(
@@ -624,7 +626,7 @@ class CodeWriter:
 
     def __translate_return(self) -> str:
         return textwrap.dedent(
-            f"""\
+            """\
                 @LCL // endFrame = LCL
                 D=M
                 @endFrame
@@ -734,5 +736,14 @@ class CodeWriter:
                 @{function_name} // goto function
                 0;JMP
                 ({return_label}) // Declare a label for the return address
+            """
+        )
+
+    def __infinite_loop(self):
+        return textwrap.dedent(
+            """\
+                (END)
+                @END
+                0;JMP
             """
         )

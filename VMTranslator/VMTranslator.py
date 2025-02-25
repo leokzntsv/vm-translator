@@ -40,7 +40,7 @@ if os.path.isdir(path):
         file_path = os.path.join(path, f)
         if f.endswith(".vm") and os.path.isfile(file_path):
             files.append(file_path)
-    
+
     folder_name = os.path.basename(path)
     output_file_name = os.path.join(path, folder_name) + ".asm"
     code_writer = CodeWriter(output_file_name)
@@ -52,6 +52,8 @@ if os.path.isdir(path):
 
         parser = Parser(file_path)
         translate(parser, code_writer)
+
+    code_writer.close()
 
 elif os.path.isfile(path):
     _, extension = os.path.splitext(path)
@@ -72,3 +74,4 @@ elif os.path.isfile(path):
 
     parser = Parser(path)
     translate(parser, code_writer)
+    code_writer.close()
