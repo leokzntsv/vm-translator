@@ -44,7 +44,6 @@ if os.path.isdir(path):
     folder_name = os.path.basename(path)
     output_file_name = os.path.join(path, folder_name) + ".asm"
     code_writer = CodeWriter(output_file_name)
-    code_writer.write_init()
 
     for file_path in files:
         _, file = os.path.split(file_path)
@@ -66,7 +65,6 @@ elif os.path.isfile(path):
     output_file_root, _ = os.path.splitext(path)
     output_file_name = output_file_root + ".asm"
     code_writer = CodeWriter(output_file_name)
-    code_writer.write_init()
 
     _, file = os.path.split(path)
     file_name, _ = os.path.splitext(file)

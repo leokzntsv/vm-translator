@@ -9,14 +9,13 @@ class CodeWriter:
         self.current_file_name = ""
         self.current_function_name = ""
 
-    def set_file_name(self, file_name: str):
-        self.current_file_name = file_name
-
-    def write_init(self):
-        with open(f"{self.output_file_name}", "a") as f:
+        with open(f"{self.output_file_name}", "w") as f:
             f.write("// Bootstrap Code\n")
             f.write(self.__initialization_code())
             f.write("\n")
+
+    def set_file_name(self, file_name: str):
+        self.current_file_name = file_name
 
     def write_arithmetic(self, command: str):
         with open(f"{self.output_file_name}", "a") as f:
@@ -149,7 +148,7 @@ class CodeWriter:
 
     def __initialization_code(self) -> str:
         return textwrap.dedent(
-            f"""\
+            """\
                 @256 // SP = 256
                 D=A
                 @SP
