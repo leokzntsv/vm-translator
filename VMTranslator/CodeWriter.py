@@ -414,7 +414,7 @@ class CodeWriter:
             @SP
             M=M+1
         """)
-    
+
     def __translate_pop_static(self, index: int) -> str:
         variable_name = f"{self.current_file_name}.{index}"
         return textwrap.dedent(f"""\

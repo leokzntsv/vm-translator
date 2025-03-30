@@ -5,7 +5,7 @@ class Parser:
     def __init__(self, file_name):
         self.file_name = file_name
         self.__reset()
-    
+
     def has_more_commands(self) -> bool:
         current_position = self.position
         has_more_lines = True
@@ -16,7 +16,7 @@ class Parser:
                 has_more_lines = False
                 break
 
-            current_position += len(line) + 1
+            current_position += len(line)
             processed_line = self.__process_line(line)
 
             if processed_line:
@@ -29,8 +29,8 @@ class Parser:
 
         if not line:
             return
-        
-        self.position += len(line) + 1
+
+        self.position += len(line)
         processed_line = self.__process_line(line)
 
         if processed_line:
@@ -77,12 +77,12 @@ class Parser:
     def __reset(self):
         self.position = 0
         self.current_command = None
-    
+
     def __get_next_line(self):
         return self.__get_line(self.position)
 
     def __get_line(self, position):
-        with open(self.file_name, "r") as f:
+        with open(self.file_name, "r", encoding="utf-8") as f:
             f.seek(position)
             line = f.readline()
             return line
@@ -97,10 +97,10 @@ class Parser:
 
     def __strip_whitespace(self, line):
         return line.strip()
-    
+
     def __get_command_arg1(self, command: str) -> str:
         return command.split()[1]
-    
+
     def __get_command_arg2(self, command: str) -> int:
         return int(command.split()[2])
 
@@ -117,27 +117,27 @@ class Parser:
             return True
         else:
             return False
-    
+
     def __is__push_command(self, command: str) -> bool:
         return command[:4] == "push"
 
     def __is_pop_command(self, command: str) -> bool:
         return command[:3] == "pop"
-    
+
     def __is_label_command(self, command: str) -> bool:
         return command[:5] == "label"
-    
+
     def __is_goto_command(self, command: str) -> bool:
         return command[:4] == "goto"
 
     def __is_if_goto_command(self, command: str) -> bool:
         return command[:7] == "if-goto"
-    
+
     def __is_function_command(self, command: str) -> bool:
         return command[:8] == "function"
 
     def __is_call_command(self, command: str) -> bool:
         return command[:4] == "call"
-    
+
     def __is_return_command(self, command: str) -> bool:
         return command[:6] == "return"
